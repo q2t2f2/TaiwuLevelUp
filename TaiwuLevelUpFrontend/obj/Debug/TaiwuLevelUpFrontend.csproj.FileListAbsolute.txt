@@ -1,0 +1,2 @@
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpFrontend\obj\Debug\TaiwuLevelUpFrontend.csproj.AssemblyReference.cache
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpFrontend\obj\Debug\TaiwuLevelUpFrontend.csproj.CoreCompileInputs.cache
