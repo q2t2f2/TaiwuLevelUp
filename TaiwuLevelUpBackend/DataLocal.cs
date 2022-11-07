@@ -1,6 +1,8 @@
 ﻿using GameData.ArchiveData;
+using GameData.Common;
 using GameData.Domains;
 using GameData.Domains.Character;
+using GameData.GameDataBridge;
 using GameData.Serializer;
 using GameData.Utilities;
 using HarmonyLib;
@@ -75,10 +77,10 @@ namespace SXDZD
         }
 
         public static string GetArchiveDirPath(bool isTestVersion = true)
-        {
-            string currentDir = Environment.CurrentDirectory.Replace("Backend","");
-            AdaptableLog.Info($"当前目录：{currentDir}");
-            string path = Path.Combine(currentDir, isTestVersion ? "Save_test" : "Save", $"world_{Common.GetCurrArchiveId() + 1}");
+        {   
+            AdaptableLog.Info($"当前存档：Common.GetCurrArchiveId()={Common.GetCurrArchiveId()}");
+
+            string path = Path.Combine(Common.ArchiveBaseDir, $"world_{Common.GetCurrArchiveId() + 1}");
 
             AdaptableLog.Info($"存档目录目录：{path}");
 
@@ -104,8 +106,16 @@ namespace SXDZD
             {
                 ColcMainAttribute();
                 ColcNeili();
+                SetTaiwuMainAttributeFull();
             }
         }
+        private void SetTaiwuMainAttributeFull()
+        {
+            //DomainManager.Taiwu.GetTaiwu().SetCurrMainAttributes()
+            var taiwu = DomainManager.Taiwu.GetTaiwu();
+            taiwu.SetCurrMainAttributes(taiwu.GetMaxMainAttributes(), DataContextManager.GetCurrentThreadDataContext());
+        }
+
         private void ColcMainAttribute()
         {
             extraMainAttribute = 0;

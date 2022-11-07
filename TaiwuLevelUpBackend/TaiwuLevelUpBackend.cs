@@ -25,7 +25,6 @@ namespace SXDZD
         public override void Initialize()
         {
             taiwuChar = new Character(DomainManager.Taiwu.GetTaiwuCharId());
-            DataLocal.Instance.LoadData();
             harmony = Harmony.CreateAndPatchAll(typeof(DataChanger));
         }
     }

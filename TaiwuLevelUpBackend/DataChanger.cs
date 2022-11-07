@@ -1,4 +1,5 @@
-﻿using GameData.Common;
+﻿using GameData.ArchiveData;
+using GameData.Common;
 using GameData.Domains;
 using GameData.Domains.Character;
 using GameData.Domains.Combat;
@@ -17,31 +18,63 @@ namespace SXDZD
 {
     public class DataChanger
     {
-        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "CalcMaxMainAttributes")]
-        public static unsafe void Character_CalcMaxMainAttributes_Patch(ref MainAttributes __result)
+        [HarmonyPostfix, HarmonyPatch(typeof(Common), "SetArchiveId")]
+        public static void Common_SetArchiveId_Patch(sbyte archiveId)
         {
+            AdaptableLog.Info($"加载当前存档的经验值数据 World_：{Common.GetCurrArchiveId()}");
+            DataLocal.Instance.LoadData();
+        }
+
+        //[HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "CalcMaxMainAttributes")]
+        //public static unsafe void Character_CalcMaxMainAttributes_Patch(ref MainAttributes __result)
+        //{
+        //    DataLocal data = DataLocal.Instance;
+
+        //    AdaptableLog.Info($"更新升级后的额外属性：{data.ExtraMainAttribute}点");
+        //    AdaptableLog.Info($"更新前属性：{__result.Items[5]}点");
+
+        //    for (int j = 0; j < 6; j++)
+        //    {
+        //        __result.Items[j] += data.ExtraMainAttribute;
+        //    }
+        //    AdaptableLog.Info($"更新后属性：{__result.Items[5]}点");
+
+        //}
+
+        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "GetMaxMainAttributes")]
+        public static unsafe void Character_GetMaxMainAttributes_Patch(GameData.Domains.Character.Character __instance, ref MainAttributes __result)
+        {
+            if(__instance.GetId() != DomainManager.Taiwu.GetTaiwuCharId())
+            {
+                return;
+            }
             DataLocal data = DataLocal.Instance;
 
-            AdaptableLog.Info($"更新升级后的额外属性：{data.ExtraMainAttribute}点");
             for (int j = 0; j < 6; j++)
             {
                 AdaptableLog.Info($"更新前属性：{__result.Items[j]}点");
                 __result.Items[j] += data.ExtraMainAttribute;
-                AdaptableLog.Info($"更新后属性：{__result.Items[j]}点");
+                AdaptableLog.Info($"GetMaxMainAttributes 新主属性：{__result.Items[j]}点");
             }
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "GetMaxNeili")]
-        public static void Character_GetMaxNeili_Patch(ref int __result)
+        public static void Character_GetMaxNeili_Patch(GameData.Domains.Character.Character __instance, ref int __result)
         {
+            if (__instance.GetId() != DomainManager.Taiwu.GetTaiwuCharId())
+            {
+                return;
+            }
             DataLocal data = DataLocal.Instance;
-            AdaptableLog.Info($"更新升级后的额外内力：{data.ExtraNeili}点");
-            
+            AdaptableLog.Info($"更新前最大内力：{__result}点");
+
             __result += data.ExtraNeili;
+            AdaptableLog.Info($"更新升级后的额外内力：{data.ExtraNeili}点  当前最大内力：{__result}");
+
         }
 
-        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Combat.CombatDomain), "CalcEvaluationList")]
-        public static void CombatDomain_CalcEvaluationList_Patch(CombatDomain __instance)
+        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Combat.CombatDomain), "CalcAndAddExp")]
+        public static void CombatDomain_CalcAndAddExp_Patch(CombatDomain __instance)
         {
             DataLocal data = DataLocal.Instance;
 
