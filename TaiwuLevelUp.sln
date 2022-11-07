@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaiwuLevelUpBackend", "TaiwuLevelUpBackend\TaiwuLevelUpBackend.csproj", "{894DD502-3858-4080-8EDE-CC6A46097345}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaiwuLevelUpFrontend", "TaiwuLevelUpFrontend\TaiwuLevelUpFrontend.csproj", "{2C5670ED-48A0-448B-8825-9EFD279EEB0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaiwuLevelUpBackend", "TaiwuLevelUpBackend\TaiwuLevelUpBackend.csproj", "{C4F77C2D-EFE5-4C41-BDF3-1A97AB92A7FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{894DD502-3858-4080-8EDE-CC6A46097345}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{894DD502-3858-4080-8EDE-CC6A46097345}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{894DD502-3858-4080-8EDE-CC6A46097345}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{894DD502-3858-4080-8EDE-CC6A46097345}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2C5670ED-48A0-448B-8825-9EFD279EEB0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2C5670ED-48A0-448B-8825-9EFD279EEB0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C5670ED-48A0-448B-8825-9EFD279EEB0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C5670ED-48A0-448B-8825-9EFD279EEB0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4F77C2D-EFE5-4C41-BDF3-1A97AB92A7FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4F77C2D-EFE5-4C41-BDF3-1A97AB92A7FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4F77C2D-EFE5-4C41-BDF3-1A97AB92A7FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4F77C2D-EFE5-4C41-BDF3-1A97AB92A7FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
-﻿using GameData.Domains;
+﻿using GameData.ArchiveData;
+using GameData.Domains;
 using GameData.Domains.Character;
 using GameData.Serializer;
 using GameData.Utilities;
@@ -15,15 +16,14 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace SXDZD
 {
-    internal class DataLocal
+    public class DataLocal
     {
         private static DataLocal instance;
-
         public static DataLocal Instance
         {
             get
             {
-                if(instance == null)
+                if (instance == null)
                 {
                     instance = new DataLocal();
                 }
@@ -32,18 +32,56 @@ namespace SXDZD
         }
 
         private string fileName = "TaiwuLevelUp_Data.sav";
-        //private MainAttributes extraMainAttributes;
+        private int expRequireStep = 200;
+
         private int exp = 0;
+        private int nextExp = 0;
         private int level = 1;
 
-        public int Level { get => level; set => level = value; }
+        private short extraMainAttribute;
+        private short extraNeili;
+        private int totalExp = 0;
+
+
+
+        public DataLocal()
+        {
+        }
+
+        public int Level { get => level; set => level = value < 1 ? 1 : value; }
         public int Exp { get => exp; set => SetExp(value); }
+
+        public short ExtraMainAttribute => extraMainAttribute;
+        public short ExtraNeili => extraNeili;
+
+        public int ExpNeed
+        {
+            get
+            {
+                return expRequireStep * level;
+            }
+        }
+
+        public int CurrrentExp
+        {
+            get
+            {
+                if (Level == 1)
+                {
+                    return Exp;
+                }
+                return Exp - GetExpNeed(level - 1);
+            }
+        }
 
         public static string GetArchiveDirPath(bool isTestVersion = true)
         {
-            string currentDir = Environment.CurrentDirectory;
+            string currentDir = Environment.CurrentDirectory.Replace("Backend","");
+            AdaptableLog.Info($"当前目录：{currentDir}");
+            string path = Path.Combine(currentDir, isTestVersion ? "Save_test" : "Save", $"world_{Common.GetCurrArchiveId() + 1}");
 
-            string path = Path.Combine(currentDir, isTestVersion ? "Save_test" : "Save");
+            AdaptableLog.Info($"存档目录目录：{path}");
+
             return Path.GetFullPath(path);
         }
 
@@ -53,33 +91,54 @@ namespace SXDZD
             ColcLevel();
         }
 
-        public void ColcLevel()
+        private void ColcLevel()
         {
-            int nextExp = GetNextExp();
+            nextExp = GetExpNeed(level);
+            int oldLevel = level;
             while (Exp >= nextExp)
             {
                 level++;
-                nextExp = GetNextExp();
+                nextExp = GetExpNeed(level);
+            }
+            if (oldLevel != level)
+            {
+                ColcMainAttribute();
+                ColcNeili();
+            }
+        }
+        private void ColcMainAttribute()
+        {
+            extraMainAttribute = 0;
+            for (int i = 0; i < Level; i++)
+            {
+                extraMainAttribute += (short)Level;
+            }
+        }
+        private void ColcNeili()
+        {
+            extraNeili = 0;
+            for (int i = 0; i < Level; i++)
+            {
+                extraNeili += (short)(Level * 2);
             }
         }
 
-        private int GetNextExp()
+        private int GetExpNeed(int level)
         {
-            int step = 200;
-            int curLevelUpExp = 0;// level * 200;
+            int expNeed = expRequireStep;
 
-            for (int i = 1; i < level + 1; i++)
+            if (level <= 1) return expNeed;
+            for (int i = 1; i < level; i++)
             {
-                curLevelUpExp += i * step;
+                expNeed += expRequireStep * i;
             }
-            return curLevelUpExp * 2;
+            return expNeed;
         }
 
         private string Serialize()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"exp={Exp}");
-            sb.AppendLine($"level={Level}");
+            sb.AppendLine($"exp={exp}");
             return sb.ToString();
         }
 
@@ -88,8 +147,9 @@ namespace SXDZD
             foreach (var s in dataString)
             {
                 string[] arr = s.Split('=');
-                string paraName = arr[0];
-                if (int.TryParse(arr[1], out int value))
+                string paraName = Regex.Replace(arr[0], "\\s", "");
+                string valueName = Regex.Replace(arr[1], "\\s", "");
+                if (int.TryParse(valueName, out int value))
                 {
                     AccessTools.Field(this.GetType(), paraName).SetValue(this, value);
                 }
@@ -98,6 +158,7 @@ namespace SXDZD
                     AdaptableLog.Error($"解析{paraName}数据出错: {arr[1]} ");
                 }
             }
+            ColcLevel();
         }
         public void LoadData()
         {
@@ -106,11 +167,13 @@ namespace SXDZD
             {
                 string[] dataStr = File.ReadAllLines(path);
                 Deserialize(dataStr);
+                AdaptableLog.Info($"加载经验值成功{path}，Exp:{Exp}点。");
             }
         }
         public void SaveData()
         {
             string path = Path.Combine(GetArchiveDirPath(), fileName);
+            AdaptableLog.Info($"保存经验值到本地{path},Exp:{Exp}点。");
             File.WriteAllText(path, Serialize());
         }
     }

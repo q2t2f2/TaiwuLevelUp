@@ -1,0 +1,12 @@
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\bin\Debug\net6.0\TaiwuLevelUpBackend.deps.json
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\bin\Debug\net6.0\TaiwuLevelUpBackend.dll
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\bin\Debug\net6.0\TaiwuLevelUpBackend.pdb
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net6.0\TaiwuLevelUpBackend.csproj.AssemblyReference.cache
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net6.0\TaiwuLevelUpBackend.GeneratedMSBuildEditorConfig.editorconfig
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net6.0\TaiwuLevelUpBackend.AssemblyInfoInputs.cache
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net6.0\TaiwuLevelUpBackend.AssemblyInfo.cs
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net6.0\TaiwuLevelUpBackend.csproj.CoreCompileInputs.cache
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net6.0\TaiwuLevelUpBackend.dll
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net6.0\refint\TaiwuLevelUpBackend.dll
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net6.0\TaiwuLevelUpBackend.pdb
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net6.0\ref\TaiwuLevelUpBackend.dll

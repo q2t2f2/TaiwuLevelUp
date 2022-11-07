@@ -1,6 +1,0 @@
-F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\bin\Debug\TaiwuLevelUpBackend.dll
-F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\bin\Debug\TaiwuLevelUpBackend.pdb
-F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\TaiwuLevelUpBackend.csproj.AssemblyReference.cache
-F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\TaiwuLevelUpBackend.csproj.CoreCompileInputs.cache
-F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\TaiwuLevelUpBackend.dll
-F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\TaiwuLevelUpBackend.pdb

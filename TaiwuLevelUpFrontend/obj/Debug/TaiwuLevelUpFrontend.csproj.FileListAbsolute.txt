@@ -1,2 +1,6 @@
 F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpFrontend\obj\Debug\TaiwuLevelUpFrontend.csproj.AssemblyReference.cache
 F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpFrontend\obj\Debug\TaiwuLevelUpFrontend.csproj.CoreCompileInputs.cache
+G:\Game\Steam\steamapps\common\The Scroll Of Taiwu\Mod\TaiwuLevelUp\Plugins\TaiwuLevelUpFrontend.dll
+G:\Game\Steam\steamapps\common\The Scroll Of Taiwu\Mod\TaiwuLevelUp\Plugins\TaiwuLevelUpFrontend.pdb
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpFrontend\obj\Debug\TaiwuLevelUpFrontend.dll
+F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpFrontend\obj\Debug\TaiwuLevelUpFrontend.pdb
