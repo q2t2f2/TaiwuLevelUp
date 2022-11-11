@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using TaiwuModdingLib.Core.Plugin;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityGameUI;
 
 namespace SXDZD
 {
@@ -45,31 +47,52 @@ namespace SXDZD
             {
                 levelGo = GameObject.Instantiate<GameObject>(days, days.transform.parent);
                 expGo = GameObject.Instantiate<GameObject>(days, days.transform.parent);
+
+
                 levelGo.name = "roleLevelTxt";
                 expGo.name = "roleExpTxt";
                 (levelGo.transform as RectTransform).anchoredPosition = (levelGo.transform as RectTransform).anchoredPosition + new Vector2(0, -30);
                 (expGo.transform as RectTransform).anchoredPosition = (expGo.transform as RectTransform).anchoredPosition + new Vector2(0, -60);
-            }else
+
+                Vector2 barPos = (levelGo.transform as RectTransform).anchoredPosition + new Vector2(0, -60);
+                ProgressBar progressBar = CreateBar(days.transform.parent, barPos);
+            }
+            else
             {
                 levelGo = levelTrans.gameObject;
                 expGo = days.transform.parent.Find("roleLevelTxt").gameObject;
             }
 
-            
+
             Debug.Log($"UI_Bottom_OnInit_Patch::levelGo：{levelGo}");
             Debug.Log($"UI_Bottom_OnInit_Patch::expGo：{expGo}");
 
-            if(coroutine != null)
+            if (coroutine != null)
             {
                 __instance.StopCoroutine(coroutine);
             }
             coroutine = __instance.StartCoroutine(RefreshExp(__instance));
 
-            __instance.AsynchMethodCall(90, 0, (offset, rawDataPool) =>
-            {
-                ShowExpAndLevel(offset, rawDataPool, levelGo, expGo);
-            });
-            
+            //__instance.AsynchMethodCall(90, 0, (offset, rawDataPool) =>
+            //{
+            //    ShowExpAndLevel(offset, rawDataPool, levelGo, expGo);
+            //});
+
+        }
+
+        private static ProgressBar CreateBar(Transform parent, Vector2 pos)
+        {
+            GameObject barContainer = new GameObject("ExpBar");
+            RectTransform rect = barContainer.AddComponent<RectTransform>();
+            rect.SetParent(parent);
+            rect.anchoredPosition = pos;
+            rect.localScale = Vector3.one * 10;
+
+            ProgressBar bar = barContainer.AddComponent<ProgressBar>().Init("25", "1");
+            bar.BarColor = new Color(0.3f, 0.3f, 1f);
+            bar.BarBGColor = Color.white;
+
+            return bar;
         }
 
         private static IEnumerator RefreshExp(UI_Bottom __instance)
@@ -85,12 +108,14 @@ namespace SXDZD
                 yield break;
             }
 
+            ProgressBar bar = days.transform.parent.Find("ExpBar").GetComponent<ProgressBar>();
+
             GameObject levelGo = levelTrans.gameObject;
             GameObject expGo = days.transform.parent.Find("roleExpTxt").gameObject;
 
             __instance.AsynchMethodCall(90, 0, (offset, rawDataPool) =>
             {
-                ShowExpAndLevel(offset, rawDataPool, levelGo, expGo);
+                ShowExpAndLevel(offset, rawDataPool, levelGo, expGo, bar);
             });
         }
 
@@ -135,10 +160,10 @@ namespace SXDZD
         //            ShowExpAndLevel(offset, rawDataPool, levelGo, expGo);
         //        });
         //    }
-            
+
         //}
 
-        public static void ShowExpAndLevel(int offset, RawDataPool rawDataPool, GameObject levelGo, GameObject expGo)
+        public static void ShowExpAndLevel(int offset, RawDataPool rawDataPool, GameObject levelGo, GameObject expGo, ProgressBar bar)
         {
             int level = 0, exp = 0, totalExp = 0;
             int newOffset = offset;
@@ -148,6 +173,9 @@ namespace SXDZD
 
             levelGo.GetComponent<TextMeshProUGUI>().text = $"等级:{level}";
             expGo.GetComponent<TextMeshProUGUI>().text = $"经验：{exp}/{totalExp}";
+
+            float progress = exp / (float)totalExp;
+            bar.Progress = progress;
         }
 
     }

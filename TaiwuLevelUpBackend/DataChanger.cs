@@ -21,25 +21,10 @@ namespace SXDZD
         [HarmonyPostfix, HarmonyPatch(typeof(Common), "SetArchiveId")]
         public static void Common_SetArchiveId_Patch(sbyte archiveId)
         {
-            AdaptableLog.Info($"加载当前存档的经验值数据 World_：{Common.GetCurrArchiveId()}");
+            AdaptableLog.Info($"加载当前存档的等级和经验值数据 World_：{Common.GetCurrArchiveId()}");
             DataLocal.Instance.LoadData();
         }
 
-        //[HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "CalcMaxMainAttributes")]
-        //public static unsafe void Character_CalcMaxMainAttributes_Patch(ref MainAttributes __result)
-        //{
-        //    DataLocal data = DataLocal.Instance;
-
-        //    AdaptableLog.Info($"更新升级后的额外属性：{data.ExtraMainAttribute}点");
-        //    AdaptableLog.Info($"更新前属性：{__result.Items[5]}点");
-
-        //    for (int j = 0; j < 6; j++)
-        //    {
-        //        __result.Items[j] += data.ExtraMainAttribute;
-        //    }
-        //    AdaptableLog.Info($"更新后属性：{__result.Items[5]}点");
-
-        //}
 
         [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "GetMaxMainAttributes")]
         public static unsafe void Character_GetMaxMainAttributes_Patch(GameData.Domains.Character.Character __instance, ref MainAttributes __result)

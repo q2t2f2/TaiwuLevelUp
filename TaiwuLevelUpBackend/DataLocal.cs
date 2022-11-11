@@ -34,7 +34,7 @@ namespace SXDZD
         }
 
         private string fileName = "TaiwuLevelUp_Data.sav";
-        private int expRequireStep = 200;
+        public static int ExpRequireStep = 200;
 
         private int exp = 0;
         private int nextExp = 0;
@@ -60,7 +60,7 @@ namespace SXDZD
         {
             get
             {
-                return expRequireStep * level;
+                return ExpRequireStep * level;
             }
         }
 
@@ -77,8 +77,8 @@ namespace SXDZD
         }
 
         public static string GetArchiveDirPath(bool isTestVersion = true)
-        {   
-            AdaptableLog.Info($"当前存档：Common.GetCurrArchiveId()={Common.GetCurrArchiveId()}");
+        {
+            AdaptableLog.Info($"当前存档：Common.GetCurrArchiveId()={Common.GetCurrArchiveId() + 1}");
 
             string path = Path.Combine(Common.ArchiveBaseDir, $"world_{Common.GetCurrArchiveId() + 1}");
 
@@ -99,19 +99,26 @@ namespace SXDZD
             int oldLevel = level;
             while (Exp >= nextExp)
             {
-                level++;
+                LevelUp();
                 nextExp = GetExpNeed(level);
             }
             if (oldLevel != level)
             {
                 ColcMainAttribute();
-                ColcNeili();
                 SetTaiwuMainAttributeFull();
             }
         }
+
+        private void LevelUp()
+        {
+            level++;
+            var taiwu = DomainManager.Taiwu.GetTaiwu();
+            int extraNeili = 5 + level * 2;
+            AdaptableLog.Error($"升级增加内力{extraNeili}");
+            taiwu.ChangeExtraNeili(DataContextManager.GetCurrentThreadDataContext(), extraNeili);
+        }
         private void SetTaiwuMainAttributeFull()
         {
-            //DomainManager.Taiwu.GetTaiwu().SetCurrMainAttributes()
             var taiwu = DomainManager.Taiwu.GetTaiwu();
             taiwu.SetCurrMainAttributes(taiwu.GetMaxMainAttributes(), DataContextManager.GetCurrentThreadDataContext());
         }
@@ -124,23 +131,14 @@ namespace SXDZD
                 extraMainAttribute += (short)Level;
             }
         }
-        private void ColcNeili()
-        {
-            extraNeili = 0;
-            for (int i = 0; i < Level; i++)
-            {
-                extraNeili += (short)(Level * 2);
-            }
-        }
-
         private int GetExpNeed(int level)
         {
-            int expNeed = expRequireStep;
+            int expNeed = ExpRequireStep;
 
             if (level <= 1) return expNeed;
             for (int i = 1; i < level; i++)
             {
-                expNeed += expRequireStep * i;
+                expNeed += ExpRequireStep * i;
             }
             return expNeed;
         }
@@ -148,6 +146,7 @@ namespace SXDZD
         private string Serialize()
         {
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"level={level}");
             sb.AppendLine($"exp={exp}");
             return sb.ToString();
         }
@@ -177,13 +176,18 @@ namespace SXDZD
             {
                 string[] dataStr = File.ReadAllLines(path);
                 Deserialize(dataStr);
-                AdaptableLog.Info($"加载经验值成功{path}，Exp:{Exp}点。");
+                AdaptableLog.Info($"加载经验值成功{path}，Level:{Level}  Exp:{Exp}点。");
             }
         }
         public void SaveData()
         {
-            string path = Path.Combine(GetArchiveDirPath(), fileName);
-            AdaptableLog.Info($"保存经验值到本地{path},Exp:{Exp}点。");
+            string dir = GetArchiveDirPath();
+            if(!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+            string path = Path.Combine(dir, fileName);
+            AdaptableLog.Info($"保存经验值到本地{path},Level:{Level}  Exp:{Exp}点。");
             File.WriteAllText(path, Serialize());
         }
     }
