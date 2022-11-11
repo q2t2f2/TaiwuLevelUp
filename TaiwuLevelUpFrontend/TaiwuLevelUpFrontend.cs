@@ -54,10 +54,10 @@ namespace SXDZD
 
                 levelGo.name = "roleLevelTxt";
                 expGo.name = "roleExpTxt";
-                (levelGo.transform as RectTransform).anchoredPosition = (levelGo.transform as RectTransform).anchoredPosition + new Vector2(0, -30);
-                (expGo.transform as RectTransform).anchoredPosition = (expGo.transform as RectTransform).anchoredPosition + new Vector2(0, -50);
+                (levelGo.transform as RectTransform).anchoredPosition = (levelGo.transform as RectTransform).anchoredPosition + new Vector2(0, -35);
+                (expGo.transform as RectTransform).anchoredPosition = (expGo.transform as RectTransform).anchoredPosition + new Vector2(0, -55);
 
-                Vector2 barPos = (levelGo.transform as RectTransform).anchoredPosition + new Vector2(0, -50);
+                Vector2 barPos = (levelGo.transform as RectTransform).anchoredPosition + new Vector2(0, -55);
                 ProgressBar progressBar = CreateBar(days.transform.parent, barPos);
             }
             else

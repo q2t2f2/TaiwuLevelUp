@@ -14,7 +14,6 @@ namespace SXDZD
     {
 
         private Harmony harmony;
-        private Character taiwuChar;
 
 
         public override void Dispose()
@@ -24,7 +23,6 @@ namespace SXDZD
 
         public override void Initialize()
         {
-            taiwuChar = new Character(DomainManager.Taiwu.GetTaiwuCharId());
             harmony = Harmony.CreateAndPatchAll(typeof(DataChanger));
         }
     }

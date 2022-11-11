@@ -59,21 +59,22 @@ namespace SXDZD
 
         //}
 
-        //[HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Combat.CombatDomain), "CalcAndAddExp")]
-        //public static void CombatDomain_CalcAndAddExp_Patch(CombatDomain __instance, DataContext context)
-        //{
-        //    DataLocal data = DataLocal.Instance;
-
-        //    CombatResultDisplayData result = __instance.GetCombatResultDisplayData();
-        //    data.AddExp(result.Exp, context);
-        //    AdaptableLog.Info($"获得经验值：{result.Exp}点，当前：{data.Exp}");
-        //}
-
-        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "ChangeExp")]
-        public static void Character_ChangeExp_Patch(int delta, DataContext context)
+        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Combat.CombatDomain), "CalcAndAddExp")]
+        public static void CombatDomain_CalcAndAddExp_Patch(CombatDomain __instance, DataContext context)
         {
             DataLocal data = DataLocal.Instance;
-            //DomainManager.Taiwu.GetTaiwu().GetExp();
+
+            CombatResultDisplayData result = __instance.GetCombatResultDisplayData();
+            data.AddExp(result.Exp, context);
+            AdaptableLog.Info($"获得战斗经验值：{result.Exp}点，当前：{data.Exp}");
+        }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "ChangeExp")]
+        public static void Character_ChangeExp_Patch(Character __instance, int delta, DataContext context)
+        {
+            if (__instance.GetId() != DomainManager.Taiwu.GetTaiwuCharId()) return;
+
+            DataLocal data = DataLocal.Instance;
             data.AddExp(delta, context);
             AdaptableLog.Info($"获得经验值：{delta}点，当前：{data.Exp}");
         }
@@ -90,7 +91,6 @@ namespace SXDZD
             }
             __result = Math.Min(newResult, (short)400);
             AdaptableLog.Info($"CombatHelper_GetMaxTotalNeiliAllocation_Patch::后端内力上限：{newResult}");
-
         }
 
 
@@ -111,7 +111,7 @@ namespace SXDZD
             {
                 NotificationCollection notificationCollection = (NotificationCollection)AccessTools.Field(typeof(GameDataBridge), "_pendingNotifications").GetValue(context);
                 //int level, exp, total,resultOffset;
-                AdaptableLog.Info($"GameDataBridge::ProcessMethodCall:DomainId={operation.DomainId}  MethodId={operation.MethodId}");
+                //AdaptableLog.Info($"GameDataBridge::ProcessMethodCall:DomainId={operation.DomainId}  MethodId={operation.MethodId}");
 
                 if (operation.MethodId == 0)
                 {

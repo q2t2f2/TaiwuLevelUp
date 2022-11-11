@@ -18,8 +18,6 @@ namespace SXDZD
             set
             {
                 progress = Mathf.Clamp(value, 0, 1);
-                Debug.Log($"设置进度为：{progress}");
-                //bar.transform.localScale = new Vector3(progress, 1, 1);
                 bar.fillAmount = progress;
             }
         }
