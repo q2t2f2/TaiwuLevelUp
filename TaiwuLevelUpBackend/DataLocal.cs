@@ -51,10 +51,7 @@ namespace SXDZD
         }
 
         public int Level { get => level; set => level = value < 1 ? 1 : value; }
-        public int Exp { get => exp; set => SetExp(value); }
-
-        public short ExtraMainAttribute => extraMainAttribute;
-        public short ExtraNeili => extraNeili;
+        public int Exp { get => exp;}
 
         public int ExpNeed
         {
@@ -87,50 +84,61 @@ namespace SXDZD
             return Path.GetFullPath(path);
         }
 
-        public void SetExp(int exp)
+        public void AddExp(int exp, DataContext context)
         {
-            this.exp = exp;
-            ColcLevel();
+            this.exp += exp;
+            ColcLevel(context);
         }
 
-        private void ColcLevel()
+        public void SetExp(int exp,DataContext context)
+        {
+            this.exp = exp;
+            ColcLevel(context);
+        }
+
+        private void ColcLevel(DataContext context)
         {
             nextExp = GetExpNeed(level);
             int oldLevel = level;
             while (Exp >= nextExp)
             {
-                LevelUp();
+                LevelUp(context);
                 nextExp = GetExpNeed(level);
             }
-            if (oldLevel != level)
-            {
-                ColcMainAttribute();
-                SetTaiwuMainAttributeFull();
-            }
+            //if (oldLevel != level)
+            //{
+            //    ColcMainAttribute();
+            //    SetTaiwuMainAttributeFull(context);
+            //}
         }
 
-        private void LevelUp()
+        private void LevelUp(DataContext context)
         {
             level++;
             var taiwu = DomainManager.Taiwu.GetTaiwu();
             int extraNeili = 5 + level * 2;
-            AdaptableLog.Error($"升级增加内力{extraNeili}");
-            taiwu.ChangeExtraNeili(DataContextManager.GetCurrentThreadDataContext(), extraNeili);
-        }
-        private void SetTaiwuMainAttributeFull()
-        {
-            var taiwu = DomainManager.Taiwu.GetTaiwu();
-            taiwu.SetCurrMainAttributes(taiwu.GetMaxMainAttributes(), DataContextManager.GetCurrentThreadDataContext());
-        }
-
-        private void ColcMainAttribute()
-        {
-            extraMainAttribute = 0;
-            for (int i = 0; i < Level; i++)
+            AdaptableLog.Info($"升级增加内力{extraNeili}");
+            if(context != null)
             {
-                extraMainAttribute += (short)Level;
+                taiwu.ChangeExtraNeili(context, extraNeili);
+                taiwu.ChangeCurrNeili(context, extraNeili);
+
+                short delta = (short)level;
+                MainAttributes mainAttributes = new MainAttributes(new short[] { delta, delta, delta, delta, delta, delta });
+                AdaptableLog.Info($"升级增加全部主属性{delta}");
+
+                taiwu.ChangeBaseMainAttributes(context, mainAttributes);
+                SetTaiwuMainAttributeFull(context);
             }
         }
+        private void SetTaiwuMainAttributeFull(DataContext context)
+        {
+            if (context == null) return;
+            var taiwu = DomainManager.Taiwu.GetTaiwu();
+            taiwu.SetCurrMainAttributes(taiwu.GetMaxMainAttributes(), context);
+        }
+
+   
         private int GetExpNeed(int level)
         {
             int expNeed = ExpRequireStep;
@@ -167,7 +175,7 @@ namespace SXDZD
                     AdaptableLog.Error($"解析{paraName}数据出错: {arr[1]} ");
                 }
             }
-            ColcLevel();
+            ColcLevel(null);
         }
         public void LoadData()
         {

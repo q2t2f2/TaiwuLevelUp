@@ -22,6 +22,9 @@ namespace SXDZD
     {
         private Harmony harmony;
         private static Coroutine coroutine;
+
+        private static int level = 1;
+        private static int exp = 0;
         public override void Dispose()
         {
 
@@ -52,9 +55,9 @@ namespace SXDZD
                 levelGo.name = "roleLevelTxt";
                 expGo.name = "roleExpTxt";
                 (levelGo.transform as RectTransform).anchoredPosition = (levelGo.transform as RectTransform).anchoredPosition + new Vector2(0, -30);
-                (expGo.transform as RectTransform).anchoredPosition = (expGo.transform as RectTransform).anchoredPosition + new Vector2(0, -60);
+                (expGo.transform as RectTransform).anchoredPosition = (expGo.transform as RectTransform).anchoredPosition + new Vector2(0, -50);
 
-                Vector2 barPos = (levelGo.transform as RectTransform).anchoredPosition + new Vector2(0, -60);
+                Vector2 barPos = (levelGo.transform as RectTransform).anchoredPosition + new Vector2(0, -50);
                 ProgressBar progressBar = CreateBar(days.transform.parent, barPos);
             }
             else
@@ -98,25 +101,29 @@ namespace SXDZD
         private static IEnumerator RefreshExp(UI_Bottom __instance)
         {
             var wait = new WaitForSeconds(0.5f);
-            yield return wait;
-            Refers _timeDisk = __instance.CGet<Refers>("TimeDisk");
-            GameObject days = _timeDisk.CGet<TextMeshProUGUI>("Days").gameObject;
-            Transform levelTrans = days.transform.parent.Find("roleLevelTxt");
-            if (levelTrans == null)
+            while (true)
             {
-                Debug.Log($"UI_Make_OnNotifyGameData_Patch::尚未生成 roleLevelTxt 组件！");
-                yield break;
+                yield return wait;
+                Refers _timeDisk = __instance.CGet<Refers>("TimeDisk");
+                GameObject days = _timeDisk.CGet<TextMeshProUGUI>("Days").gameObject;
+                Transform levelTrans = days.transform.parent.Find("roleLevelTxt");
+                if (levelTrans == null)
+                {
+                    Debug.Log($"UI_Make_OnNotifyGameData_Patch::尚未生成 roleLevelTxt 组件！");
+                    yield break;
+                }
+
+                ProgressBar bar = days.transform.parent.Find("ExpBar").GetComponent<ProgressBar>();
+
+                GameObject levelGo = levelTrans.gameObject;
+                GameObject expGo = days.transform.parent.Find("roleExpTxt").gameObject;
+
+                __instance.AsynchMethodCall(190, 0, (offset, rawDataPool) =>
+                {
+                    ShowExpAndLevel(offset, rawDataPool, levelGo, expGo, bar);
+                });
             }
 
-            ProgressBar bar = days.transform.parent.Find("ExpBar").GetComponent<ProgressBar>();
-
-            GameObject levelGo = levelTrans.gameObject;
-            GameObject expGo = days.transform.parent.Find("roleExpTxt").gameObject;
-
-            __instance.AsynchMethodCall(90, 0, (offset, rawDataPool) =>
-            {
-                ShowExpAndLevel(offset, rawDataPool, levelGo, expGo, bar);
-            });
         }
 
         //[HarmonyPostfix, HarmonyPatch(typeof(UI_Bottom), "OnNotifyGameData")]
@@ -171,12 +178,31 @@ namespace SXDZD
             newOffset += Serializer.Deserialize(rawDataPool, newOffset, ref exp);
             Serializer.Deserialize(rawDataPool, newOffset, ref totalExp);
 
+            TaiwuLevelUpFrontend.level = level;
+            TaiwuLevelUpFrontend.exp = exp;
+
             levelGo.GetComponent<TextMeshProUGUI>().text = $"等级:{level}";
             expGo.GetComponent<TextMeshProUGUI>().text = $"经验：{exp}/{totalExp}";
 
             float progress = exp / (float)totalExp;
             bar.Progress = progress;
         }
+
+
+        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.CombatHelper), "GetMaxTotalNeiliAllocation")]
+        public static void CombatHelper_GetMaxTotalNeiliAllocation_Patch(ref short __result)
+        {
+            short newResult = (short)(__result + TaiwuLevelUpFrontend.level);
+            if (newResult > short.MaxValue)
+            {
+                newResult = short.MaxValue;
+            }
+            Debug.Log($"CombatHelper_GetMaxTotalNeiliAllocation_Patch::前端内力上限：当前等级：{TaiwuLevelUpFrontend.level}  之前：{__result} 之后： {newResult}");
+
+            __result = (short)Mathf.Min(newResult, 400);
+
+        }
+
 
     }
 }

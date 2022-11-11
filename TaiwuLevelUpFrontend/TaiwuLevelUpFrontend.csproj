@@ -77,7 +77,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataLocal.cs" />
     <Compile Include="ProgressBar.cs" />
     <Compile Include="UnityGameUI\Extensions.cs" />
     <Compile Include="TaiwuLevelUpFrontend.cs" />

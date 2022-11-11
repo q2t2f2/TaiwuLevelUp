@@ -10,6 +10,7 @@ using GameData.Utilities;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,47 +27,72 @@ namespace SXDZD
         }
 
 
-        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "GetMaxMainAttributes")]
-        public static unsafe void Character_GetMaxMainAttributes_Patch(GameData.Domains.Character.Character __instance, ref MainAttributes __result)
-        {
-            if(__instance.GetId() != DomainManager.Taiwu.GetTaiwuCharId())
-            {
-                return;
-            }
-            DataLocal data = DataLocal.Instance;
+        //[HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "GetMaxMainAttributes")]
+        //public static unsafe void Character_GetMaxMainAttributes_Patch(GameData.Domains.Character.Character __instance, ref MainAttributes __result)
+        //{
+        //    if(__instance.GetId() != DomainManager.Taiwu.GetTaiwuCharId())
+        //    {
+        //        return;
+        //    }
+        //    DataLocal data = DataLocal.Instance;
 
-            for (int j = 0; j < 6; j++)
-            {
-                AdaptableLog.Info($"更新前属性：{__result.Items[j]}点");
-                __result.Items[j] += data.ExtraMainAttribute;
-                AdaptableLog.Info($"GetMaxMainAttributes 新主属性：{__result.Items[j]}点");
-            }
+        //    for (int j = 0; j < 6; j++)
+        //    {
+        //        AdaptableLog.Info($"更新前属性：{__result.Items[j]}点");
+        //        __result.Items[j] += data.ExtraMainAttribute;
+        //        AdaptableLog.Info($"GetMaxMainAttributes 新主属性：{__result.Items[j]}点");
+        //    }
+        //}
+
+        //[HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "GetMaxNeili")]
+        //public static void Character_GetMaxNeili_Patch(GameData.Domains.Character.Character __instance, ref int __result)
+        //{
+        //    if (__instance.GetId() != DomainManager.Taiwu.GetTaiwuCharId())
+        //    {
+        //        return;
+        //    }
+        //    DataLocal data = DataLocal.Instance;
+        //    AdaptableLog.Info($"更新前最大内力：{__result}点");
+
+        //    __result += data.ExtraNeili;
+        //    AdaptableLog.Info($"更新升级后的额外内力：{data.ExtraNeili}点  当前最大内力：{__result}");
+
+        //}
+
+        //[HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Combat.CombatDomain), "CalcAndAddExp")]
+        //public static void CombatDomain_CalcAndAddExp_Patch(CombatDomain __instance, DataContext context)
+        //{
+        //    DataLocal data = DataLocal.Instance;
+
+        //    CombatResultDisplayData result = __instance.GetCombatResultDisplayData();
+        //    data.AddExp(result.Exp, context);
+        //    AdaptableLog.Info($"获得经验值：{result.Exp}点，当前：{data.Exp}");
+        //}
+
+        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "ChangeExp")]
+        public static void Character_ChangeExp_Patch(int delta, DataContext context)
+        {
+            DataLocal data = DataLocal.Instance;
+            //DomainManager.Taiwu.GetTaiwu().GetExp();
+            data.AddExp(delta, context);
+            AdaptableLog.Info($"获得经验值：{delta}点，当前：{data.Exp}");
         }
 
-        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "GetMaxNeili")]
-        public static void Character_GetMaxNeili_Patch(GameData.Domains.Character.Character __instance, ref int __result)
+        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.CombatHelper), "GetMaxTotalNeiliAllocation")]
+        public static void CombatHelper_GetMaxTotalNeiliAllocation_Patch(ref short __result)
         {
-            if (__instance.GetId() != DomainManager.Taiwu.GetTaiwuCharId())
+            DataLocal data = DataLocal.Instance;
+
+            short newResult = (short)(__result + data.Level);
+            if (newResult > short.MaxValue)
             {
-                return;
+                newResult = short.MaxValue;
             }
-            DataLocal data = DataLocal.Instance;
-            AdaptableLog.Info($"更新前最大内力：{__result}点");
-
-            __result += data.ExtraNeili;
-            AdaptableLog.Info($"更新升级后的额外内力：{data.ExtraNeili}点  当前最大内力：{__result}");
+            __result = Math.Min(newResult, (short)400);
+            AdaptableLog.Info($"CombatHelper_GetMaxTotalNeiliAllocation_Patch::后端内力上限：{newResult}");
 
         }
 
-        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Combat.CombatDomain), "CalcAndAddExp")]
-        public static void CombatDomain_CalcAndAddExp_Patch(CombatDomain __instance)
-        {
-            DataLocal data = DataLocal.Instance;
-
-            CombatResultDisplayData result = __instance.GetCombatResultDisplayData();
-            data.Exp += result.Exp;
-            AdaptableLog.Info($"获得经验值：{result.Exp}点，当前：{data.Exp}");
-        }
 
 
         [HarmonyPostfix, HarmonyPatch(typeof(GlobalDomain), "SaveWorld")]
@@ -81,7 +107,7 @@ namespace SXDZD
         [HarmonyPrefix]
         public static bool CallMethodPatch(Operation operation, RawDataPool argDataPool, DataContext context)
         {
-            if (operation.DomainId == 90)//占用90DomainId
+            if (operation.DomainId == 190)//占用90DomainId
             {
                 NotificationCollection notificationCollection = (NotificationCollection)AccessTools.Field(typeof(GameDataBridge), "_pendingNotifications").GetValue(context);
                 //int level, exp, total,resultOffset;
