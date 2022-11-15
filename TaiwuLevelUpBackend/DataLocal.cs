@@ -32,18 +32,46 @@ namespace SXDZD
                 return instance;
             }
         }
+        
+        /// <summary>
+        /// 每级主属性点增加
+        /// </summary>
+        public static int MainAttributePerLevel = 1;
+        /// <summary>
+        /// 每级自由属性点增加
+        /// </summary>
+        public static int FreeMainAttributePerLevel = 1;
+        /// <summary>
+        /// 每级内力增加
+        /// </summary>
+        public static int NeiliPerLevel = 5;
 
-        private string fileName = "TaiwuLevelUp_Data.sav";
+        /// <summary>
+        /// 每级经验需求增加
+        /// </summary>
         public static int ExpRequireStep = 200;
 
+        /// <summary>
+        /// 经验获得系数
+        /// </summary>
+        public static int ExpRatio = 1;
+
+
+        /// <summary>
+        /// 是否突破精纯上限
+        /// </summary>
+        public static bool EnableOverstepNeili = true;
+
+        private static string fileName = "TaiwuLevelUp_Data.sav";
+
+
+
+
         private int exp = 0;
-        private int nextExp = 0;
         private int level = 1;
-
-        private short extraMainAttribute;
-        private short extraNeili;
-        private int totalExp = 0;
-
+        private int freeMainAttribute = 0;
+        
+        private int nextExp = 0;
 
 
         public DataLocal()
@@ -52,6 +80,7 @@ namespace SXDZD
 
         public int Level { get => level; set => level = value < 1 ? 1 : value; }
         public int Exp { get => exp;}
+        public int FreeMainAttribute { get => freeMainAttribute; }
 
         public int ExpNeed
         {
@@ -86,7 +115,11 @@ namespace SXDZD
 
         public void AddExp(int exp, DataContext context)
         {
-            this.exp += exp;
+            float ratio = ExpRatio / 100f;
+            int delta = (int)(exp * ratio);
+            this.exp += delta;
+            AdaptableLog.Info($"获得经验值：{delta}点，当前经验值：{Exp}");
+
             ColcLevel(context);
         }
 
@@ -105,25 +138,21 @@ namespace SXDZD
                 LevelUp(context);
                 nextExp = GetExpNeed(level);
             }
-            //if (oldLevel != level)
-            //{
-            //    ColcMainAttribute();
-            //    SetTaiwuMainAttributeFull(context);
-            //}
         }
 
         private void LevelUp(DataContext context)
         {
             level++;
             var taiwu = DomainManager.Taiwu.GetTaiwu();
-            int extraNeili = 5 + level * 2;
+            int extraNeili = level * 2 + NeiliPerLevel;// 5 + level * 2;
             AdaptableLog.Info($"升级增加内力{extraNeili}");
-            if(context != null)
+            freeMainAttribute += FreeMainAttributePerLevel;
+            if (context != null)
             {
                 taiwu.ChangeExtraNeili(context, extraNeili);
                 taiwu.ChangeCurrNeili(context, extraNeili);
 
-                short delta = (short)level;
+                short delta = (short)MainAttributePerLevel;// level;
                 MainAttributes mainAttributes = new MainAttributes(new short[] { delta, delta, delta, delta, delta, delta });
                 AdaptableLog.Info($"升级增加全部主属性{delta}");
 
@@ -156,6 +185,7 @@ namespace SXDZD
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"level={level}");
             sb.AppendLine($"exp={exp}");
+            sb.AppendLine($"freeMainAttribute={freeMainAttribute}");
             return sb.ToString();
         }
 
@@ -195,7 +225,7 @@ namespace SXDZD
                 Directory.CreateDirectory(dir);
             }
             string path = Path.Combine(dir, fileName);
-            AdaptableLog.Info($"保存经验值到本地{path},Level:{Level}  Exp:{Exp}点。");
+            AdaptableLog.Info($"保存经验值到本地{path},Level:{Level}  Exp:{Exp}点, 剩余自由属性点数：{freeMainAttribute}点。");
             File.WriteAllText(path, Serialize());
         }
     }

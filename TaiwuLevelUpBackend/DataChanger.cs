@@ -65,23 +65,26 @@ namespace SXDZD
             DataLocal data = DataLocal.Instance;
 
             CombatResultDisplayData result = __instance.GetCombatResultDisplayData();
+            AdaptableLog.Info($"获得战斗历练值：{result.Exp}点，当前：{data.Exp}");
             data.AddExp(result.Exp, context);
-            AdaptableLog.Info($"获得战斗经验值：{result.Exp}点，当前：{data.Exp}");
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "ChangeExp")]
         public static void Character_ChangeExp_Patch(Character __instance, int delta, DataContext context)
         {
             if (__instance.GetId() != DomainManager.Taiwu.GetTaiwuCharId()) return;
-
+            if(delta < 0) return;
             DataLocal data = DataLocal.Instance;
+            AdaptableLog.Info($"获得历练值：{delta}点，当前经验值：{data.Exp}");
+
             data.AddExp(delta, context);
-            AdaptableLog.Info($"获得经验值：{delta}点，当前：{data.Exp}");
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.CombatHelper), "GetMaxTotalNeiliAllocation")]
         public static void CombatHelper_GetMaxTotalNeiliAllocation_Patch(ref short __result)
         {
+            if (!DataLocal.EnableOverstepNeili) return;
+
             DataLocal data = DataLocal.Instance;
 
             short newResult = (short)(__result + data.Level);
@@ -119,9 +122,11 @@ namespace SXDZD
                     int curExp = DataLocal.Instance.CurrrentExp;
                     int expNeed = DataLocal.Instance.ExpNeed;
                     int level = DataLocal.Instance.Level;
+                    int freeMainAttribute = DataLocal.Instance.FreeMainAttribute;
                     Serializer.Serialize(level, notificationCollection.DataPool);
                     Serializer.Serialize(curExp, notificationCollection.DataPool);
                     Serializer.Serialize(expNeed, notificationCollection.DataPool);
+                    Serializer.Serialize(freeMainAttribute, notificationCollection.DataPool);
                 }
                 return false;
             }

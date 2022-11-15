@@ -17,14 +17,16 @@ using UnityGameUI;
 
 namespace SXDZD
 {
-    [PluginConfig("TaiwuLevelUp", "熟悉的总督", "0.1")]
+    [PluginConfig("TaiwuLevelUp", "熟悉的总督", "0.3")]
     public class TaiwuLevelUpFrontend : TaiwuRemakePlugin
     {
         private Harmony harmony;
         private static Coroutine coroutine;
 
-        private static int level = 1;
-        private static int exp = 0;
+        public static int level = 1;
+        public static int exp = 0;
+        public static int totalExp = 200;
+        public static int freeMainAttribute = 0;
         public override void Dispose()
         {
 
@@ -172,14 +174,12 @@ namespace SXDZD
 
         public static void ShowExpAndLevel(int offset, RawDataPool rawDataPool, GameObject levelGo, GameObject expGo, ProgressBar bar)
         {
-            int level = 0, exp = 0, totalExp = 0;
+            //int level = 0, exp = 0, totalExp = 0, freeMainAttribute = 0;
             int newOffset = offset;
             newOffset += Serializer.Deserialize(rawDataPool, offset, ref level);
             newOffset += Serializer.Deserialize(rawDataPool, newOffset, ref exp);
-            Serializer.Deserialize(rawDataPool, newOffset, ref totalExp);
-
-            TaiwuLevelUpFrontend.level = level;
-            TaiwuLevelUpFrontend.exp = exp;
+            newOffset += Serializer.Deserialize(rawDataPool, newOffset, ref totalExp);
+            newOffset += Serializer.Deserialize(rawDataPool, newOffset, ref freeMainAttribute);
 
             levelGo.GetComponent<TextMeshProUGUI>().text = $"等级:{level}";
             expGo.GetComponent<TextMeshProUGUI>().text = $"经验：{exp}/{totalExp}";
