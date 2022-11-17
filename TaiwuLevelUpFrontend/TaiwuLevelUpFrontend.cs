@@ -17,9 +17,14 @@ using UnityGameUI;
 
 namespace SXDZD
 {
-    [PluginConfig("TaiwuLevelUp", "熟悉的总督", "0.3")]
+    [PluginConfig("TaiwuLevelUp", "熟悉的总督", "0.4")]
     public class TaiwuLevelUpFrontend : TaiwuRemakePlugin
     {
+        /// <summary>
+        /// 是否突破精纯上限
+        /// </summary>
+        public static bool EnableOverstepNeili = true;
+
         private Harmony harmony;
         private static Coroutine coroutine;
 
@@ -35,6 +40,10 @@ namespace SXDZD
         public override void Initialize()
         {
             harmony = Harmony.CreateAndPatchAll(typeof(TaiwuLevelUpFrontend));
+        }
+        public override void OnModSettingUpdate()
+        {
+            ModManager.GetSetting(base.ModIdStr, "EnableOverstepNeili", ref EnableOverstepNeili);
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(UI_Bottom), "OnEnable")]
@@ -192,6 +201,8 @@ namespace SXDZD
         [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.CombatHelper), "GetMaxTotalNeiliAllocation")]
         public static void CombatHelper_GetMaxTotalNeiliAllocation_Patch(ref short __result)
         {
+            if (!EnableOverstepNeili) return;
+
             short newResult = (short)(__result + TaiwuLevelUpFrontend.level);
             if (newResult > short.MaxValue)
             {

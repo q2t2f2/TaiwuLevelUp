@@ -9,7 +9,7 @@ using TaiwuModdingLib.Core.Plugin;
 
 namespace SXDZD
 {
-    [PluginConfig("TaiwuLevelUp", "熟悉的总督", "0.3")]
+    [PluginConfig("TaiwuLevelUp", "熟悉的总督", "0.4")]
     public class TaiwuLevelUpBackend : TaiwuRemakePlugin
     {
 
