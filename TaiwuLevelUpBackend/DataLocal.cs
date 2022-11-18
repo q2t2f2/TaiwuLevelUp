@@ -32,7 +32,7 @@ namespace SXDZD
                 return instance;
             }
         }
-        
+
         /// <summary>
         /// 每级主属性点增加
         /// </summary>
@@ -70,7 +70,7 @@ namespace SXDZD
         private int exp = 0;
         private int level = 1;
         private int freeMainAttribute = 0;
-        
+
         private int nextExp = 0;
 
 
@@ -79,7 +79,7 @@ namespace SXDZD
         }
 
         public int Level { get => level; set => level = value < 1 ? 1 : value; }
-        public int Exp { get => exp;}
+        public int Exp { get => exp; }
         public int FreeMainAttribute { get => freeMainAttribute; }
 
         public int ExpNeed
@@ -123,7 +123,7 @@ namespace SXDZD
             ColcLevel(context);
         }
 
-        public void SetExp(int exp,DataContext context)
+        public void SetExp(int exp, DataContext context)
         {
             this.exp = exp;
             ColcLevel(context);
@@ -135,6 +135,14 @@ namespace SXDZD
             int oldLevel = level;
             while (Exp >= nextExp)
             {
+                if (context == null)//加载数据
+                {
+                    int newExp = nextExp >= 1 ? nextExp - 1 : nextExp;
+                    AdaptableLog.Info($"检测到多余的经验值导致异常升级，舍弃经验值{Exp - newExp}点。");
+
+                    SetExp(newExp, context);
+                    return;
+                }
                 LevelUp(context);
                 nextExp = GetExpNeed(level);
             }
@@ -167,7 +175,7 @@ namespace SXDZD
             taiwu.SetCurrMainAttributes(taiwu.GetMaxMainAttributes(), context);
         }
 
-   
+
         private int GetExpNeed(int level)
         {
             int expNeed = ExpRequireStep;
@@ -220,13 +228,29 @@ namespace SXDZD
         public void SaveData()
         {
             string dir = GetArchiveDirPath();
-            if(!Directory.Exists(dir))
+            if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
             }
             string path = Path.Combine(dir, fileName);
             AdaptableLog.Info($"保存经验值到本地{path},Level:{Level}  Exp:{Exp}点, 剩余自由属性点数：{freeMainAttribute}点。");
+
+            //留个备份
+            if (File.Exists(path))
+            {
+
+                File.Copy(path, path + ".bak", true);
+            }
             File.WriteAllText(path, Serialize());
+        }
+
+        public void AddAttribute(int index, DataContext context)
+        {
+            short num = 1;
+            if (freeMainAttribute < num) return;
+            DomainManager.Taiwu.GetTaiwu().ChangeBaseMainAttribute(context, (sbyte)index, num);
+            DomainManager.Taiwu.GetTaiwu().ChangeCurrMainAttribute(context, (sbyte)index, num);
+            freeMainAttribute--;
         }
     }
 }

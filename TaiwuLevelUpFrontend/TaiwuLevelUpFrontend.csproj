@@ -78,6 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ProgressBar.cs" />
+    <Compile Include="AttributeButton.cs" />
+    <Compile Include="TaiwuLevelUpMethodAndDataIDs.cs" />
     <Compile Include="UnityGameUI\Extensions.cs" />
     <Compile Include="TaiwuLevelUpFrontend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

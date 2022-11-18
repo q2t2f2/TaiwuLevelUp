@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GameData.Domains.DomainHelper;
 
 namespace SXDZD
 {
@@ -73,7 +74,7 @@ namespace SXDZD
         public static void Character_ChangeExp_Patch(Character __instance, int delta, DataContext context)
         {
             if (__instance.GetId() != DomainManager.Taiwu.GetTaiwuCharId()) return;
-            if(delta < 0) return;
+            if (delta < 0) return;
             DataLocal data = DataLocal.Instance;
             AdaptableLog.Info($"获得历练值：{delta}点，当前经验值：{data.Exp}");
 
@@ -106,28 +107,96 @@ namespace SXDZD
         }
 
 
-        [HarmonyPatch(typeof(GameDataBridge), "ProcessMethodCall")]
-        [HarmonyPrefix]
-        public static bool CallMethodPatch(Operation operation, RawDataPool argDataPool, DataContext context)
-        {
-            if (operation.DomainId == 190)//占用90DomainId
-            {
-                NotificationCollection notificationCollection = (NotificationCollection)AccessTools.Field(typeof(GameDataBridge), "_pendingNotifications").GetValue(context);
-                //int level, exp, total,resultOffset;
-                //AdaptableLog.Info($"GameDataBridge::ProcessMethodCall:DomainId={operation.DomainId}  MethodId={operation.MethodId}");
+        //[HarmonyPatch(typeof(GameDataBridge), "ProcessMethodCall")]
+        //[HarmonyPrefix]
+        //public static bool CallMethodPatch(Operation operation, RawDataPool argDataPool, DataContext context)
+        //{
+        //    if (operation.DomainId == 190)//占用90DomainId
+        //    {
+        //        NotificationCollection notificationCollection = (NotificationCollection)AccessTools.Field(typeof(GameDataBridge), "_pendingNotifications").GetValue(context);
+        //        //int level, exp, total,resultOffset;
+        //        //AdaptableLog.Info($"GameDataBridge::ProcessMethodCall:DomainId={operation.DomainId}  MethodId={operation.MethodId}");
 
-                if (operation.MethodId == 0)
+        //        if (operation.MethodId == 0)
+        //        {
+        //            notificationCollection.Notifications.Add(Notification.CreateMethodReturn(operation.ListenerId, operation.DomainId, operation.MethodId, 0));
+        //            int curExp = DataLocal.Instance.CurrrentExp;
+        //            int expNeed = DataLocal.Instance.ExpNeed;
+        //            int level = DataLocal.Instance.Level;
+        //            int freeMainAttribute = DataLocal.Instance.FreeMainAttribute;
+        //            Serializer.Serialize(level, notificationCollection.DataPool);
+        //            Serializer.Serialize(curExp, notificationCollection.DataPool);
+        //            Serializer.Serialize(expNeed, notificationCollection.DataPool);
+        //            Serializer.Serialize(freeMainAttribute, notificationCollection.DataPool);
+        //        }
+        //        return false;
+        //    }
+        //    return true;
+        //}
+
+        //[HarmonyPatch(typeof(GameDataBridge), "ProcessDataModification")]
+        //[HarmonyPrefix]
+        //public static bool ProcessDataModificationPatch(Operation operation, RawDataPool dataPool, DataContext context)
+        //{
+        //    if(operation.DomainId == DomainIds.Character && operation.DataId == TaiwuLevelUpMethodAndDataIDs.Data_LevelAndExp)
+        //    {
+        //        NotificationCollection notificationCollection = (NotificationCollection)AccessTools.Field(typeof(GameDataBridge), "_pendingNotifications").GetValue(context);
+        //        DataUid uid = new DataUid(operation.DomainId,operation.DataId,operation.SubId0,operation.SubId1);
+        //        notificationCollection.Notifications.Add(Notification.CreateDataModification(uid,))
+        //        return false;
+        //    }
+        //    return true;
+        //}
+
+        [HarmonyPatch(typeof(CharacterDomain), "CallMethod")]
+        [HarmonyPrefix]
+        public static bool CharacterDomainCallMethodPatch(CharacterDomain __instance, ref int __result, Operation operation, RawDataPool argDataPool, RawDataPool returnDataPool, DataContext context)
+        {
+            if (operation.MethodId == TaiwuLevelUpMethodAndDataIDs.Method_GetLevelAndExp)//占用1000DomainId
+            {
+                int num = operation.ArgsCount;
+
+                if (num != 0)
                 {
-                    notificationCollection.Notifications.Add(Notification.CreateMethodReturn(operation.ListenerId, operation.DomainId, operation.MethodId, 0));
-                    int curExp = DataLocal.Instance.CurrrentExp;
-                    int expNeed = DataLocal.Instance.ExpNeed;
-                    int level = DataLocal.Instance.Level;
-                    int freeMainAttribute = DataLocal.Instance.FreeMainAttribute;
-                    Serializer.Serialize(level, notificationCollection.DataPool);
-                    Serializer.Serialize(curExp, notificationCollection.DataPool);
-                    Serializer.Serialize(expNeed, notificationCollection.DataPool);
-                    Serializer.Serialize(freeMainAttribute, notificationCollection.DataPool);
+                    AdaptableLog.Info($"CharacterDomainCallMethodPatch: 调用方法 Method_GetLevelAndExp 参数个数错误 应为0个参数，当前：{num}个");
                 }
+               
+                List<int> resultInts = new List<int>
+                {
+                    DataLocal.Instance.Level,
+                    DataLocal.Instance.CurrrentExp,
+                    DataLocal.Instance.ExpNeed,
+                    DataLocal.Instance.FreeMainAttribute
+                };
+
+                __result = Serializer.Serialize(resultInts, returnDataPool);
+                return false;
+            }
+            else if (operation.MethodId == TaiwuLevelUpMethodAndDataIDs.Method_AddAttributePoint)//占用1001DomainId
+            {
+                int num = operation.ArgsCount;
+                int offset = operation.ArgsOffset;
+
+                if (num != 1)
+                {
+                    AdaptableLog.Info($"CharacterDomainCallMethodPatch: 调用方法 Method_AddAttributePoint 参数个数错误 应为1个参数，当前：{num}个");
+                }
+
+                int index = 0;
+                offset += Serializer.Deserialize(argDataPool, offset, ref index);
+
+                DataLocal.Instance.AddAttribute(index, context);
+
+
+                List<int> resultInts = new List<int>
+                {
+                    DataLocal.Instance.Level,
+                    DataLocal.Instance.CurrrentExp,
+                    DataLocal.Instance.ExpNeed,
+                    DataLocal.Instance.FreeMainAttribute
+                };
+
+                __result = Serializer.Serialize(resultInts, returnDataPool);
                 return false;
             }
             return true;

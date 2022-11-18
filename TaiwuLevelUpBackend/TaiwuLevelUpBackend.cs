@@ -1,15 +1,18 @@
 ﻿using GameData.Domains;
+using GameData.Utilities;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using TaiwuModdingLib.Core.Plugin;
 
 namespace SXDZD
 {
-    [PluginConfig("TaiwuLevelUp", "熟悉的总督", "0.4")]
+    [PluginConfig("TaiwuLevelUp", "熟悉的总督", "0.8")]
     public class TaiwuLevelUpBackend : TaiwuRemakePlugin
     {
 
@@ -33,6 +36,7 @@ namespace SXDZD
             DomainManager.Mod.GetSetting(base.ModIdStr, "ExpRequireStep", ref DataLocal.ExpRequireStep);
             DomainManager.Mod.GetSetting(base.ModIdStr, "ExpRatio", ref DataLocal.ExpRatio);
             DomainManager.Mod.GetSetting(base.ModIdStr, "EnableOverstepNeili", ref DataLocal.EnableOverstepNeili);
+            AdaptableLog.Info($"加载Mod配置   DataLocal.ExpRequireStep：{DataLocal.ExpRequireStep}，DataLocal.MainAttributePerLevel:{DataLocal.MainAttributePerLevel}。");
         }
     }
 }
