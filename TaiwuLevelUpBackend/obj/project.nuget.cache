@@ -1,12 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jNOSO0OIflTNe4iN3pDC3MqWbcgj855SUPT1nuo5tiRF+CHqOcG/rLsif4toO5oib4coffevGRgGVo6kKgNxLg==",
+  "dgSpecHash": "TtYXirj5GUFxxhdUphKPwl+vdgF0kmnCaaKZl01mijsbszZWy/KPoTql2BYnzXpZIB7W6pS9JXU+KeNZBUL3Ow==",
   "success": true,
-  "projectFilePath": "F:\\Qiutengfei\\MyDoc\\ModProjects\\TaiwuLevelUp\\TaiwuLevelUpBackend\\TaiwuLevelUpBackend.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\qiutengfei\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\5.0.0\\microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512",
-    "C:\\Users\\qiutengfei\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\5.0.0\\microsoft.windowsdesktop.app.ref.5.0.0.nupkg.sha512",
-    "C:\\Users\\qiutengfei\\.nuget\\packages\\microsoft.netcore.app.ref\\5.0.0\\microsoft.netcore.app.ref.5.0.0.nupkg.sha512"
-  ],
+  "projectFilePath": "E:\\Qiutengfei\\MyDoc\\ModProjects\\TaiwuLevelUp\\TaiwuLevelUpBackend\\TaiwuLevelUpBackend.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

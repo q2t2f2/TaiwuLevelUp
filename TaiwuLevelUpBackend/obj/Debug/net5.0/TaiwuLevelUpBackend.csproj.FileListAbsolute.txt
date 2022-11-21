@@ -12,3 +12,17 @@ F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.
 F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\refint\TaiwuLevelUpBackend.dll
 F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\TaiwuLevelUpBackend.pdb
 F:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\ref\TaiwuLevelUpBackend.dll
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\bin\Debug\net5.0\TaiwuLevelUpBackend.deps.json
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\bin\Debug\net5.0\TaiwuLevelUpBackend.dll
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\bin\Debug\net5.0\TaiwuLevelUpBackend.pdb
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\TaiwuLevelUpBackend.csproj.AssemblyReference.cache
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\TaiwuLevelUpBackend.Properties.Resources.resources
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\TaiwuLevelUpBackend.csproj.GenerateResource.cache
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\TaiwuLevelUpBackend.GeneratedMSBuildEditorConfig.editorconfig
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\TaiwuLevelUpBackend.AssemblyInfoInputs.cache
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\TaiwuLevelUpBackend.AssemblyInfo.cs
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\TaiwuLevelUpBackend.csproj.CoreCompileInputs.cache
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\TaiwuLevelUpBackend.dll
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\refint\TaiwuLevelUpBackend.dll
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\TaiwuLevelUpBackend.pdb
+E:\Qiutengfei\MyDoc\ModProjects\TaiwuLevelUp\TaiwuLevelUpBackend\obj\Debug\net5.0\ref\TaiwuLevelUpBackend.dll

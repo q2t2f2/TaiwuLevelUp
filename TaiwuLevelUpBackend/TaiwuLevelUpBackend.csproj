@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -10,19 +10,19 @@
 
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>G:\Game\Steam\steamapps\common\The Scroll Of Taiwu\The Scroll of Taiwu_Data\Managed\0Harmony.dll</HintPath>
+      <HintPath>D:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll of Taiwu_Data\Managed\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="GameData">
-      <HintPath>G:\Game\Steam\steamapps\common\The Scroll Of Taiwu\Backend\GameData.dll</HintPath>
+      <HintPath>D:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\Backend\GameData.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Redzen">
-      <HintPath>G:\Game\Steam\steamapps\common\The Scroll Of Taiwu\Backend\Redzen.dll</HintPath>
+      <HintPath>D:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\Backend\Redzen.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="TaiwuModdingLib">
-      <HintPath>G:\Game\Steam\steamapps\common\The Scroll Of Taiwu\The Scroll of Taiwu_Data\Managed\TaiwuModdingLib.dll</HintPath>
+      <HintPath>D:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll of Taiwu_Data\Managed\TaiwuModdingLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
