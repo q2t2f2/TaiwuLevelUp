@@ -8,8 +8,8 @@ namespace SXDZD
 {
     public class TaiwuLevelUpMethodAndDataIDs
     {
-        public const ushort Method_GetLevelAndExp = 1000;
+        public const ushort Method_GetLevelAndExp = 1723;
 
-        public const ushort Method_AddAttributePoint = 1001;
+        public const ushort Method_AddAttributePoint = 1724;
     }
 }

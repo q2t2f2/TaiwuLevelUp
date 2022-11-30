@@ -25,7 +25,7 @@ using Text = UnityEngine.UI.Text;
 
 namespace SXDZD
 {
-    [PluginConfig("TaiwuLevelUp", "熟悉的总督", "0.8")]
+    [PluginConfig("TaiwuLevelUp", "熟悉的总督", "0.91")]
     public class TaiwuLevelUpFrontend : TaiwuRemakePlugin
     {
         /// <summary>
@@ -150,57 +150,24 @@ namespace SXDZD
 
         }
 
-        //[HarmonyPostfix, HarmonyPatch(typeof(UI_Bottom), "OnNotifyGameData")]
-        //public static void UI_Make_OnNotifyGameData_Patch(UI_Bottom __instance, List<NotificationWrapper> notifications)
-        //{
-        //    Refers _timeDisk = __instance.CGet<Refers>("TimeDisk");
-
-        //    GameObject days = _timeDisk.CGet<TextMeshProUGUI>("Days").gameObject;
-        //    Transform levelTrans = days.transform.parent.Find("roleLevelTxt");
-        //    if (levelTrans == null)
-        //    {
-        //        Debug.Log($"UI_Make_OnNotifyGameData_Patch::尚未生成 roleLevelTxt 组件！");
-        //        return;
-        //    }
-        //    GameObject levelGo = levelTrans.gameObject;
-        //    GameObject expGo = days.transform.parent.Find("roleExpTxt").gameObject;
-        //    bool has90 = false;
-        //    foreach (NotificationWrapper wrapper in notifications)
-        //    {
-        //        Notification notification = wrapper.Notification;
-        //        var rawDataPool = wrapper.DataPool;
-        //        Debug.Log($"UI_Make_OnNotifyGameData_Patch::notification.DomainId={notification.DomainId}");
-
-        //        if (notification.DomainId == 90)
-        //        {
-        //            has90 = true;
-        //            int level = 0, exp = 0, totalExp = 0;
-        //            int offset = 0;
-        //            offset += Serializer.Deserialize(wrapper.DataPool, offset, ref level);
-        //            offset += Serializer.Deserialize(rawDataPool, offset, ref exp);
-        //            Serializer.Deserialize(rawDataPool, offset, ref totalExp);
-
-        //            levelGo.GetComponent<TextMeshProUGUI>().text = $"等级:{level}";
-        //            expGo.GetComponent<TextMeshProUGUI>().text = $"经验：{exp}/{totalExp}";
-        //        }
-        //    }
-        //    if(false == has90)
-        //    {
-        //        __instance.AsynchMethodCall(90, 0, (offset, rawDataPool) =>
-        //        {
-        //            ShowExpAndLevel(offset, rawDataPool, levelGo, expGo);
-        //        });
-        //    }
-
-        //}
-
         public static void ShowExpAndLevel(int offset, RawDataPool rawDataPool, GameObject levelGo, GameObject expGo, ProgressBar bar)
         {
             //int level = 0, exp = 0, totalExp = 0, freeMainAttribute = 0;
 
             List<int> datas = new List<int>();
             Serializer.Deserialize(rawDataPool, offset, ref datas);
-
+            if (datas.Count == 4)
+            {
+                level = datas[0];
+                exp = datas[1];
+                totalExp = datas[2];
+                freeMainAttribute = datas[3];
+            }
+            else
+            {
+                Debug.Log($"收到的数据参数个数不正确,应为4,现在为{datas.Count}");
+                return;
+            }
             level = datas[0];
             exp = datas[1];
             totalExp = datas[2];
@@ -314,11 +281,17 @@ namespace SXDZD
             {
                 List<int> datas = new List<int>();
                 Serializer.Deserialize(rawDataPool, offset, ref datas);
-
-                level = datas[0];
-                exp = datas[1];
-                totalExp = datas[2];
-                freeMainAttribute = datas[3];
+                if(datas.Count == 4)
+                {
+                    level = datas[0];
+                    exp = datas[1];
+                    totalExp = datas[2];
+                    freeMainAttribute = datas[3];
+                }else
+                {
+                    return;
+                }
+                
             }
             bool isTaiwu = IsTaiwu(__instance.CurCharacterId);
             pointGo.GetComponent<Text>().text = $"可分配点数： <color=#FF5500><size=30><b>{freeMainAttribute}</b></size></color>";

@@ -152,13 +152,14 @@ namespace SXDZD
         [HarmonyPrefix]
         public static bool CharacterDomainCallMethodPatch(CharacterDomain __instance, ref int __result, Operation operation, RawDataPool argDataPool, RawDataPool returnDataPool, DataContext context)
         {
-            if (operation.MethodId == TaiwuLevelUpMethodAndDataIDs.Method_GetLevelAndExp)//占用1000DomainId
+            if (operation.MethodId == TaiwuLevelUpMethodAndDataIDs.Method_GetLevelAndExp)//占用1723DomainId
             {
                 int num = operation.ArgsCount;
 
                 if (num != 0)
                 {
                     AdaptableLog.Info($"CharacterDomainCallMethodPatch: 调用方法 Method_GetLevelAndExp 参数个数错误 应为0个参数，当前：{num}个");
+                    return true;
                 }
                
                 List<int> resultInts = new List<int>
@@ -180,6 +181,7 @@ namespace SXDZD
                 if (num != 1)
                 {
                     AdaptableLog.Info($"CharacterDomainCallMethodPatch: 调用方法 Method_AddAttributePoint 参数个数错误 应为1个参数，当前：{num}个");
+                    return true;
                 }
 
                 int index = 0;
